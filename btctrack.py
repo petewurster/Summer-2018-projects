@@ -30,3 +30,9 @@ print('your banked profits are $' if sum(buys)>-1 else 'your current Losses are 
       sum(buys),'.',sep='')
 
 input('\n\npress ENTER to exit')
+
+
+
+
+
+##
