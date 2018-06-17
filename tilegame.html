@@ -34,23 +34,34 @@
 
 <script type="text/javascript">
 
+//disable r-click menu
+document.addEventListener("contextmenu",function(event){
+	event.preventDefault()
+});
+
+
 //defines colorset func
 function colorset(x,y){
 	switch(x){
 		//square.innerHTML=value;
+		case -1:
+			x=2
+			y.setAttribute("class","black");
+			break;
+		case 0:
+			y.setAttribute("class","empty");
+			break;
 		case 1:
 			y.setAttribute("class","white");
 			break;
 		case 2:
 			y.setAttribute("class","black");
 			break;
-		default:
+		case 3:
 			x=0;
 			y.setAttribute("class","empty");
 			break;
 	};
-
-
 };
 
 
@@ -82,10 +93,13 @@ function colorset(x,y){
 
 //flips tile when clicked
 	document.addEventListener("click",function(whatTile){
+		var lor=whatTile.which;
 		var square= whatTile.target;
 		var value= Number(square.innerHTML);
-		colorset(value+=1,square);
+		if (lor==1){colorset(value+=1,square)};
+		if (lor==3){colorset(value-=1,square)};
 		if(value==3){value=0};
+		if(value==-1){value=2};
 		square.innerHTML=value;	
 	});
 
