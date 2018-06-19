@@ -18,7 +18,6 @@ for (var row =0; row <8; row++){
 	};
 	document.write("</tr>");
 };
-document.write("</table>");
 
 
 //illegal move & win condition detection
@@ -52,8 +51,6 @@ function check(chkTile){
 		if(document.getElementById(qr).innerHTML==0){
 			rb=0;rw=0;
 		}
-
-
 		//test cols //qc=question col item
 		var qc= x+""+chkCol;
 		if(document.getElementById(qc).innerHTML==1){
@@ -62,7 +59,6 @@ function check(chkTile){
 			if(cw==3){return true};
 			wincw+=1;
 			if(wincw==5){return true};
-
 		};
 		if(document.getElementById(qc).innerHTML==2){
 			cw=0;
@@ -75,11 +71,10 @@ function check(chkTile){
 			cb=0;cw=0;
 		};
 	};
+	//test for win cond
 	if(winrw==4 && winrb==4 && wincw==4 && wincb==4){
 		alert("You win!");
 	};
-
-
 };
 
 
@@ -106,7 +101,6 @@ function colorset(color,tile){
 			tile.setAttribute("class","red");
 			break;
 	};
-	return color;
 };
 
 
@@ -120,7 +114,6 @@ document.addEventListener("contextmenu",function(event){
 document.addEventListener("click",function(whatTile){
 	var square= whatTile.target;
 	var value= Number(square.innerHTML);
-
 	//reset bad tiles
 	if(value===9){
 		colorset(0,square);
@@ -145,6 +138,5 @@ document.addEventListener("click",function(whatTile){
 		if(badTile==true){
 			square.innerHTML=9;
 			colorset(9,square)};
-
 	};
 });
