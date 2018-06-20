@@ -1,25 +1,3 @@
-//build table by looping thru rows
-for (var row =0; row <8; row++){
-	document.write("<tr>");
-	//then loop thru columns
-	for (var col =0;col <8; col++){
-		//label & color tiles
-		document.write("<td id='");
-		var rowcol= row+""+col;
-		document.write(rowcol);
-		document.write("'>");
-		//sets states for initial tiles (12% white, 12% black)
-		var color= Math.round((Math.random()*8)+1);
-		if(color>2){color=0};
-		document.write(color);
-		document.write("</td>");
-		var square=document.getElementById(rowcol);
-		colorset(color,square);
-	};
-	document.write("</tr>");
-};
-
-
 //illegal move & win condition detection
 function check(chkTile){
 	var chkRow=Math.floor(chkTile/10);
@@ -37,16 +15,14 @@ function check(chkTile){
 		if(document.getElementById(qr).innerHTML==1){
 			rb=0;
 			rw+=1;
-			if(rw==3){return true};
 			winrw+=1;
-			if(winrw==5){return true};
+			if(rw==3){return true};
 		};
 		if(document.getElementById(qr).innerHTML==2){
 			rw=0;
 			rb+=1;
-			if(rb==3){return true};
 			winrb+=1;
-			if(winrb==5){return true};
+			if(rb==3){return true};
 		};
 		if(document.getElementById(qr).innerHTML==0){
 			rb=0;rw=0;
@@ -56,16 +32,14 @@ function check(chkTile){
 		if(document.getElementById(qc).innerHTML==1){
 			cb=0;
 			cw+=1;
-			if(cw==3){return true};
 			wincw+=1;
-			if(wincw==5){return true};
+			if(cw==3){return true};
 		};
 		if(document.getElementById(qc).innerHTML==2){
 			cw=0;
 			cb+=1;
-			if(cb==3){return true};
 			wincb+=1;
-			if(wincb==5){return true};
+			if(cb==3){return true};
 		};
 		if(document.getElementById(qc).innerHTML==0){
 			cb=0;cw=0;
@@ -74,13 +48,16 @@ function check(chkTile){
 	//test for win cond
 	if(winrw==4 && winrb==4 && wincw==4 && wincb==4){
 		alert("You win!");
+		location.reload();
+
 	};
+	//reload for bad init tiles
+	if(winrw>4 || winrb>4 || wincw>4 || wincb>4){return 99};
 };
 
 
 //defines color setting func
 function colorset(color,tile){
-	console.log(tile);
 	switch(color){
 		case 3:
 			tile.setAttribute("class","empty");
@@ -100,6 +77,40 @@ function colorset(color,tile){
 		case 9:
 			tile.setAttribute("class","red");
 			break;
+	};
+};
+
+
+//define table builder
+function tableBuild(){
+	//build table by looping thru rows
+	for (var row =0; row <8; row++){
+		document.write("<tr>");
+		//then loop thru columns
+		for (var col =0;col <8; col++){
+			//label & color tiles
+			document.write("<td id='");
+			var rowcol= row+""+col;
+			document.write(rowcol);
+			document.write("'>");
+			//sets states for initial tiles (14% white, 14% black)
+			var color= Math.round((Math.random()*7)+1);
+			if(color>2){color=0};
+			document.write(color);
+			document.write("</td>");
+			var square=document.getElementById(rowcol);
+			colorset(color,square);
+		};
+		document.write("</tr>");
+	};
+	//reload if initial table has illegal moves
+	for(var row=0;row<8; row++){
+		for (var col=0;col<8;col++){
+			var rowcol= row+""+col;
+			var square=document.getElementById(rowcol);
+			//reload for bad start tiles
+			if(check(square.id)==true||check(square.id)==99){location.reload()};
+		};
 	};
 };
 
@@ -140,3 +151,5 @@ document.addEventListener("click",function(whatTile){
 			colorset(9,square)};
 	};
 });
+
+tableBuild();
