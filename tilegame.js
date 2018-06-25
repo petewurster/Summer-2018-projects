@@ -1,4 +1,4 @@
-//illegal move & win condition detection
+//illegal move returns true
 function check(chkTile){
 	var chkRow=Math.floor(chkTile/10);
 	var chkCol=chkTile%10;
@@ -46,13 +46,22 @@ function check(chkTile){
 		};
 	};
 	//test for win cond
-	if(winrw==4 && winrb==4 && wincw==4 && wincb==4){
-		alert("You win!");
-		location.reload();
-
-	};
-	//reload for bad init tiles
+	if(winrw==4 && winrb==4 && wincw==4 && wincb==4){return "ok"};
+	//reload for illegal init tiles
 	if(winrw>4 || winrb>4 || wincw>4 || wincb>4){return 99};
+};
+
+
+//direcet diagonal loop across table to verify win
+function wintest(){
+	var winq="";
+	for(var x=0;x<88;x+=11){
+		winq+=check(x);
+		if(winq=="okokokokokokokok"){
+			alert("Y O U   W I N  !!!");
+			location.reload();
+		};
+	};
 };
 
 
@@ -150,6 +159,12 @@ document.addEventListener("click",function(whatTile){
 			square.innerHTML=9;
 			colorset(9,square)};
 	};
+	wintest();
 });
 
+
+
+
+
+//start the game
 tableBuild();
