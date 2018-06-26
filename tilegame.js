@@ -1,58 +1,62 @@
-//illegal move returns true
+//loop in a "cross" centered on the target tile
 function check(chkTile){
 	var chkRow=Math.floor(chkTile/10);
 	var chkCol=chkTile%10;
-	//row Blk & row Wht
-	var rb=0; var rw=0;
-	//col Blk & col Wht
-	var cb=0; var cw=0;
-	//win condition test vars
-	var winrb=0; var winrw=0;
-	var wincb=0; var wincw=0;
+	//init accumulators
+	var rowBlack=0; var rowWhite=0;
+	var colBlack=0; var colWhite=0;
+	var winRowBlack=0; var winRowWhite=0;
+	var wincolBlack=0; var wincolWhite=0;
 	for(x=0;x<8;x++){
-		//test rows //qr=question row item
-		var qr= chkRow+""+x;
-		if(document.getElementById(qr).innerHTML==1){
-			rb=0;
-			rw+=1;
-			winrw+=1;
-			if(rw==3){return true};
+		//test row
+		var querryRow= chkRow+""+x;
+		if(document.getElementById(querryRow).innerHTML==1){
+			rowBlack=0;
+			rowWhite+=1;
+			winRowWhite+=1;
+			//3 consecutive white in row = badTile
+			if(rowWhite==3){return true};
 		};
-		if(document.getElementById(qr).innerHTML==2){
-			rw=0;
-			rb+=1;
-			winrb+=1;
-			if(rb==3){return true};
+		if(document.getElementById(querryRow).innerHTML==2){
+			rowWhite=0;
+			rowBlack+=1;
+			winRowBlack+=1;
+			//3 consecutive black in row = badTile
+			if(rowBlack==3){return true};
 		};
-		if(document.getElementById(qr).innerHTML==0){
-			rb=0;rw=0;
+		//reset accumulators on empty tiles in ROW
+		if(document.getElementById(querryRow).innerHTML==0){
+			rowBlack=0;rowWhite=0;
 		}
-		//test cols //qc=question col item
-		var qc= x+""+chkCol;
-		if(document.getElementById(qc).innerHTML==1){
-			cb=0;
-			cw+=1;
-			wincw+=1;
-			if(cw==3){return true};
+		//test col
+		var querryCol= x+""+chkCol;
+		if(document.getElementById(querryCol).innerHTML==1){
+			colBlack=0;
+			colWhite+=1;
+			wincolWhite+=1;
+			//3 consecutive white in col = badTile
+			if(colWhite==3){return true};
 		};
-		if(document.getElementById(qc).innerHTML==2){
-			cw=0;
-			cb+=1;
-			wincb+=1;
-			if(cb==3){return true};
+		if(document.getElementById(querryCol).innerHTML==2){
+			colWhite=0;
+			colBlack+=1;
+			wincolBlack+=1;
+			//3 consecutive black in col = badTile
+			if(colBlack==3){return true};
 		};
-		if(document.getElementById(qc).innerHTML==0){
-			cb=0;cw=0;
+		//reset accumulators on empty tiles in COL
+		if(document.getElementById(querryCol).innerHTML==0){
+			colBlack=0;colWhite=0;
 		};
 	};
 	//test for win cond
-	if(winrw==4 && winrb==4 && wincw==4 && wincb==4){return "ok"};
+	if(winRowWhite==4 && winRowBlack==4 && wincolWhite==4 && wincolBlack==4){return "ok"};
 	//reload for illegal init tiles
-	if(winrw>4 || winrb>4 || wincw>4 || wincb>4){return 99};
+	if(winRowWhite>4 || winRowBlack>4 || wincolWhite>4 || wincolBlack>4){return 99};
 };
 
 
-//direcet diagonal loop across table to verify win
+//diagonal loop across table to verify win
 function wintest(){
 	var winq="";
 	for(var x=0;x<88;x+=11){
@@ -99,24 +103,25 @@ function tableBuild(){
 		for (var col =0;col <8; col++){
 			//label & color tiles
 			document.write("<td id='");
-			var rowcol= row+""+col;
-			document.write(rowcol);
+			var rowCol= row+""+col;
+			document.write(rowCol);
 			document.write("'>");
 			//sets states for initial tiles (14% white, 14% black)
 			var color= Math.round((Math.random()*7)+1);
 			if(color>2){color=0};
 			document.write(color);
 			document.write("</td>");
-			var square=document.getElementById(rowcol);
+			var square=document.getElementById(rowCol);
 			colorset(color,square);
 		};
 		document.write("</tr>");
 	};
 	//reload if initial table has illegal moves
+	//does NOT guarantee a win-able game was generated
 	for(var row=0;row<8; row++){
 		for (var col=0;col<8;col++){
-			var rowcol= row+""+col;
-			var square=document.getElementById(rowcol);
+			var rowCol= row+""+col;
+			var square=document.getElementById(rowCol);
 			//reload for bad start tiles
 			if(check(square.id)==true||check(square.id)==99){location.reload()};
 		};
@@ -125,36 +130,35 @@ function tableBuild(){
 
 
 //disable r-click menu
-document.addEventListener("contextmenu",function(event){
-	event.preventDefault()
-});
+document.addEventListener("contextmenu",function(event){event.preventDefault()});
 
 
 //flips tile when clicked
 document.addEventListener("click",function(whatTile){
 	var square= whatTile.target;
-	var value= Number(square.innerHTML);
+	var tileValue= Number(square.innerHTML);
 	//reset bad tiles
-	if(value===9){
+	if(tileValue===9){
 		colorset(0,square);
 		square.innerHTML=0
 	};
 	//handle good tiles
-	if(value===0||value===1||value===2){
+	if(tileValue===0||tileValue===1||tileValue===2){
 		//left mouse
 		if (whatTile.which==1){
-			colorset(value+=1,square);
-			if(value==3){value=0};
+			colorset(tileValue+=1,square);
+			if(tileValue==3){tileValue=0};
 		};
 		//right mouse
 		if (whatTile.which==3){
-			colorset(value-=1,square);
-			if(value==-1){value=2};
+			colorset(tileValue-=1,square);
+			if(tileValue==-1){tileValue=2};
 		};
 		//set new tile
-		square.innerHTML=value;
+		square.innerHTML=tileValue;
 		//check for bad tile & win condition
 		var badTile=check(square.id);
+		//paint badTile red
 		if(badTile==true){
 			square.innerHTML=9;
 			colorset(9,square)};
