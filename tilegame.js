@@ -1,3 +1,4 @@
+
 //loop in a "cross" centered on the target tile
 function check(chkTile){
 	var chkRow=Math.floor(chkTile/10);
@@ -52,7 +53,7 @@ function check(chkTile){
 	//test for win cond
 	if(winRowWhite==4 && winRowBlack==4 && wincolWhite==4 && wincolBlack==4){return "ok"};
 	//reload for illegal init tiles
-	if(winRowWhite>4 || winRowBlack>4 || wincolWhite>4 || wincolBlack>4){return 99};
+	if(winRowWhite>4 || winRowBlack>4 || wincolWhite>4 || wincolBlack>4){return true};
 };
 
 
@@ -60,6 +61,7 @@ function check(chkTile){
 function wintest(){
 	var winq="";
 	for(var x=0;x<88;x+=11){
+		//submit coordinates for checking
 		winq+=check(x);
 		if(winq=="okokokokokokokok"){
 			alert("Y O U   W I N  !!!");
@@ -75,20 +77,20 @@ function colorset(color,tile){
 		case 3:
 			tile.setAttribute("class","empty");
 			break;
-		case -1:
-			tile.setAttribute("class","black");
-			break;
 		case 0:
 			tile.setAttribute("class","empty");
 			break;
-		case 1:
-			tile.setAttribute("class","white");
+		case -1:
+			tile.setAttribute("class","black");
 			break;
 		case 2:
 		 	tile.setAttribute("class","black");
 		 	break;
+		case 1:
+			tile.setAttribute("class","white");
+			break;
 		case 9:
-			tile.setAttribute("class","red");
+			tile.classList.add("red");
 			break;
 	};
 };
@@ -113,6 +115,10 @@ function tableBuild(){
 			document.write("</td>");
 			var square=document.getElementById(rowCol);
 			colorset(color,square);
+			if(color!=0){
+				square.classList.add("orig");
+			};
+
 		};
 		document.write("</tr>");
 	};
@@ -123,7 +129,7 @@ function tableBuild(){
 			var rowCol= row+""+col;
 			var square=document.getElementById(rowCol);
 			//reload for bad start tiles
-			if(check(square.id)==true||check(square.id)==99){location.reload()};
+			if(check(square.id)==true){location.reload()};
 		};
 	};
 };
@@ -137,31 +143,27 @@ document.addEventListener("contextmenu",function(event){event.preventDefault()})
 document.addEventListener("click",function(whatTile){
 	var square= whatTile.target;
 	var tileValue= Number(square.innerHTML);
-	//reset bad tiles
-	if(tileValue===9){
-		colorset(0,square);
-		square.innerHTML=0
-	};
-	//handle good tiles
+	//handle good clicks
 	if(tileValue===0||tileValue===1||tileValue===2){
-		//left mouse
-		if (whatTile.which==1){
-			colorset(tileValue+=1,square);
-			if(tileValue==3){tileValue=0};
+		//ignore init tiles
+		if(square.classList[1]!="orig"){
+			//left mouse
+			if (whatTile.which==1){
+				colorset(tileValue+=1,square);
+				if(tileValue==3){tileValue=0};
+			};
+			//right mouse
+			if (whatTile.which==3){
+				colorset(tileValue-=1,square);
+				if(tileValue==-1){tileValue=2};
+			};
+			//set new tile
+			square.innerHTML=tileValue;
+			//check for bad tile & win condition
+			var badTile=check(square.id);
+			//paint badTile red
+			if(badTile==true){colorset(9,square)};
 		};
-		//right mouse
-		if (whatTile.which==3){
-			colorset(tileValue-=1,square);
-			if(tileValue==-1){tileValue=2};
-		};
-		//set new tile
-		square.innerHTML=tileValue;
-		//check for bad tile & win condition
-		var badTile=check(square.id);
-		//paint badTile red
-		if(badTile==true){
-			square.innerHTML=9;
-			colorset(9,square)};
 	};
 	wintest();
 });
