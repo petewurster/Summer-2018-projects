@@ -108,8 +108,8 @@ function tableBuild(){
 			var rowCol= row+""+col;
 			document.write(rowCol);
 			document.write("'>");
-			//sets states for initial tiles (14% white, 14% black)
-			var color= Math.round((Math.random()*7)+1);
+			//sets states for initial tiles (17% white, 17% black)
+			var color= Math.round((Math.random()*6)+1);
 			if(color>2){color=0};
 			document.write(color);
 			document.write("</td>");
